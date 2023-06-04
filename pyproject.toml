@@ -21,8 +21,8 @@ wandb = "^0.15.3"
 
 
 [tool.poetry.group.dev.dependencies]
-notebook = "^6.5.4"
 black = {extras = ["jupyter"], version = "^23.3.0"}
+jupyter = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]
