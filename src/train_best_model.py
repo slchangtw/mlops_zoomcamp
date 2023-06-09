@@ -5,8 +5,8 @@ from optuna.integration.mlflow import MLflowCallback
 from sklearn.metrics import mean_squared_error
 from xgboost import XGBRegressor
 
-from config import MLFLOW_CONFIG
-from create_model import create_pipeline
+from .config import MLFLOW_CONFIG
+from .create_model import create_pipeline
 
 RANDOM_STATE = 42
 

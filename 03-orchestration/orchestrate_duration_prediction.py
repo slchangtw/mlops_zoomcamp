@@ -2,10 +2,13 @@ from pathlib import Path
 
 import pandas as pd
 from prefect import flow, task
+from sklearn.pipeline import Pipeline
 
-from src import prcoess_trips, read_trips, train_best_xgbregressor
+from src import process_trips, read_trips, save_model, train_best_xgbregressor
 
-DATA_FOLDER = "../data"
+DATA_FOLDER = "data"
+MODEL_FOLDER = "models"
+
 
 @task(retries=3, retry_delay_seconds=2, name="Read taxi trips data")
 def read_trips_task(
@@ -16,10 +19,10 @@ def read_trips_task(
 
 @task()
 def process_trips_task(trips: pd.DataFrame) -> pd.DataFrame:
-    return prcoess_trips(trips)
+    return process_trips(trips)
 
 
-@task()
+@task(log_prints=True)
 def train_best_xgbregressor_task(
     X_train: pd.DataFrame,
     y_train: pd.Series,
@@ -29,12 +32,18 @@ def train_best_xgbregressor_task(
     return train_best_xgbregressor(X_train, y_train, X_val, y_val)
 
 
+@task(log_prints=True)
+def save_best_model_task(path: str, model_name: str, pipe: Pipeline) -> None:
+    path = Path(path)
+    save_model(path, model_name, pipe)
+
+
 @flow()
 def main_flow(
-    data_folder: str=DATA_FOLDER,
-    train_data: tuple[str] = ("green", "2022", "1"),
-    val_data: tuple[str] = ("green", "2022", "2"),
-):  
+    data_folder: str = DATA_FOLDER,
+    train_data: tuple[str, ...] = ("green", "2022", "1"),
+    val_data: tuple[str, ...] = ("green", "2022", "2"),
+) -> None:
     data_folder = Path(data_folder)
 
     trips_train = read_trips_task(data_folder, *train_data)
@@ -54,9 +63,10 @@ def main_flow(
     X_val = trips_val[used_cols]
     y_val = trips_val[target]
 
-    pipe = train_best_xgbregressor_task(X_train, y_train, X_val, y_val)
+    best_model = train_best_xgbregressor_task(X_train, y_train, X_val, y_val)
+    save_best_model_task(MODEL_FOLDER, "xgbregressor.pkl", best_model)
 
-    return pipe
+    return None
 
 
 if __name__ == "__main__":
