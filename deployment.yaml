@@ -1,0 +1,6 @@
+deployments:
+- name: duration_prediction
+  entrypoint: 03-orchestration/orchestrate_duration_prediction.py:main_flow
+  work_pool:
+    name: trips_prediction_pool
+  
