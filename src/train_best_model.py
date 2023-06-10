@@ -3,6 +3,7 @@ import optuna
 import pandas as pd
 from optuna.integration.mlflow import MLflowCallback
 from sklearn.metrics import mean_squared_error
+from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
 
 from .config import MLFLOW_CONFIG
@@ -16,7 +17,7 @@ def train_best_xgbregressor(
     y_train: pd.Series,
     X_val: pd.DataFrame,
     y_val: pd.Series,
-):
+) -> tuple[Pipeline, float]:
     mlflc = MLflowCallback(
         tracking_uri=MLFLOW_CONFIG["tracking_uri"],
         metric_name="rmse_val",
@@ -43,4 +44,7 @@ def train_best_xgbregressor(
     study = optuna.create_study(direction="minimize")
     study.optimize(objective, n_trials=10, gc_after_trial=True, callbacks=[mlflc])
 
-    return create_pipeline(XGBRegressor(**study.best_params))
+    return (
+        create_pipeline(XGBRegressor(**study.best_params)),
+        study.best_trial.values[0],
+    )

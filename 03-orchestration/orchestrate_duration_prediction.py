@@ -1,7 +1,10 @@
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
 from prefect import flow, task
+from prefect.artifacts import create_markdown_artifact
+from prefect_aws import S3Bucket
 from sklearn.pipeline import Pipeline
 
 from src import process_trips, read_trips, save_model, train_best_xgbregressor
@@ -38,6 +41,24 @@ def save_best_model_task(path: str, model_name: str, pipe: Pipeline) -> None:
     save_model(path, model_name, pipe)
 
 
+@task()
+def markdown_task(rmse: float) -> None:
+    markdown_report = f"""# RMSE Report
+
+        ## Summary
+
+        Duration Prediction 
+
+        ## RMSE XGBoost Model
+
+        | Region    | RMSE |
+        |:----------|-------:|
+        | {date.today()} | {rmse:.2f} |
+    """
+
+    create_markdown_artifact(key="duration-model-report", markdown=markdown_report)
+
+
 @flow()
 def main_flow(
     data_folder: str = DATA_FOLDER,
@@ -45,6 +66,9 @@ def main_flow(
     val_data: tuple[str, ...] = ("green", "2022", "2"),
 ) -> None:
     data_folder = Path(data_folder)
+
+    s3_bucket_block = S3Bucket.load("aws-s3")
+    s3_bucket_block.download_folder_to_path(from_folder="data", to_folder=data_folder)
 
     trips_train = read_trips_task(data_folder, *train_data)
     trips_val = read_trips_task(data_folder, *val_data)
@@ -63,8 +87,9 @@ def main_flow(
     X_val = trips_val[used_cols]
     y_val = trips_val[target]
 
-    best_model = train_best_xgbregressor_task(X_train, y_train, X_val, y_val)
+    best_model, rmse = train_best_xgbregressor_task(X_train, y_train, X_val, y_val)
     save_best_model_task(MODEL_FOLDER, "xgbregressor.pkl", best_model)
+    markdown_task(rmse)
 
     return None
 
