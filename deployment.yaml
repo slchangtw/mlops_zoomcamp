@@ -3,4 +3,8 @@ deployments:
   entrypoint: 03-orchestration/orchestrate_duration_prediction.py:main_flow
   work_pool:
     name: trips_prediction_pool
+- name: duration_prediction_hw
+  entrypoint: 03-orchestration/homework.py:main_flow_hw
+  work_pool:
+    name: trips_prediction_pool
   
