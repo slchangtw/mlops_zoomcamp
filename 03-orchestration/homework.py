@@ -6,9 +6,11 @@ from prefect import flow, task
 from prefect.artifacts import create_markdown_artifact
 from prefect_aws import S3Bucket
 from prefect_email import EmailServerCredentials, email_send_message
+from sklearn.metrics import mean_squared_error
 from sklearn.pipeline import Pipeline
+from xgboost import XGBRegressor
 
-from src import process_trips, read_trips, save_model, train_best_xgbregressor
+from src import create_pipeline, process_trips, read_trips, save_model
 
 DATA_FOLDER = "data"
 MODEL_FOLDER = "models"
@@ -24,16 +26,6 @@ def read_trips_task(
 @task()
 def process_trips_task(trips: pd.DataFrame) -> pd.DataFrame:
     return process_trips(trips)
-
-
-@task(log_prints=True)
-def train_best_xgbregressor_task(
-    X_train: pd.DataFrame,
-    y_train: pd.Series,
-    X_val: pd.DataFrame,
-    y_val: pd.Series,
-) -> pd.DataFrame:
-    return train_best_xgbregressor(X_train, y_train, X_val, y_val)
 
 
 @task(log_prints=True)
@@ -61,10 +53,10 @@ def markdown_task(rmse: float) -> None:
 
 
 @flow()
-def main_flow(
+def main_flow_hw(
     data_folder: str = DATA_FOLDER,
-    train_data: tuple[str, ...] = ("green", "2022", "1"),
-    val_data: tuple[str, ...] = ("green", "2022", "2"),
+    train_data: tuple[str, ...] = ("green", "2023", "1"),
+    val_data: tuple[str, ...] = ("green", "2023", "2"),
 ) -> None:
     data_folder = Path(data_folder)
 
@@ -88,8 +80,22 @@ def main_flow(
     X_val = trips_val[used_cols]
     y_val = trips_val[target]
 
-    best_model, rmse = train_best_xgbregressor_task(X_train, y_train, X_val, y_val)
-    save_best_model_task(MODEL_FOLDER, "xgbregressor.pkl", best_model)
+    model_params = {
+        "learning_rate": 0.09585355369315604,
+        "max_depth": 30,
+        "min_child_weight": 1.060597050922164,
+        "objective": "reg:linear",
+        "reg_alpha": 0.018060244040060163,
+        "reg_lambda": 0.011658731377413597,
+        "seed": 42,
+    }
+    xgb_regressor = XGBRegressor(**model_params)
+    model = create_pipeline(xgb_regressor)
+
+    model.fit(X_train, y_train)
+    rmse = mean_squared_error(y_val, model.predict(X_val), squared=False)
+
+    save_best_model_task(MODEL_FOLDER, "xgbregressor.pkl", model)
     markdown_task(rmse)
 
     email_server_credentials = EmailServerCredentials.load(
@@ -106,4 +112,4 @@ def main_flow(
 
 
 if __name__ == "__main__":
-    main_flow()
+    main_flow_hw()

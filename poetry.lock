@@ -2910,6 +2910,23 @@ prefect = ">=2.10.9"
 dev = ["black", "boto3-stubs (>=1.24.39)", "coverage", "flake8", "interrogate", "isort", "mkdocs", "mkdocs-gen-files", "mkdocs-material", "mkdocstrings-python-legacy", "mock", "moto (>=3.1.16)", "mypy", "pillow", "pre-commit", "pytest", "pytest-asyncio", "pytest-lazy-fixture", "pytest-xdist", "types-boto3 (>=1.0.2)"]
 
 [[package]]
+name = "prefect-email"
+version = "0.2.2"
+description = "Prefect tasks and subflows for interacting with email"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "prefect-email-0.2.2.tar.gz", hash = "sha256:932ee5e99bc74e59264b0ddb33f6218bcce5a8c08392ef1c936a42d4744b529e"},
+    {file = "prefect_email-0.2.2-py3-none-any.whl", hash = "sha256:267447c9090068b5b5cbe18cde239b87126117237473325bd002d0fa181e0f2a"},
+]
+
+[package.dependencies]
+prefect = ">=2.0.0"
+
+[package.extras]
+dev = ["black", "coverage", "flake8", "interrogate", "isort", "mkdocs", "mkdocs-gen-files", "mkdocs-material", "mkdocstrings[python]", "mock", "mypy", "pillow", "pre-commit", "pytest", "pytest-asyncio"]
+
+[[package]]
 name = "prometheus-client"
 version = "0.16.0"
 description = "Python client for the Prometheus monitoring system."
@@ -4724,4 +4741,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "6a2fa3da4e474b0927a206a5adf4867607594558ef4a11a3d23cc94314893f74"
+content-hash = "b77a06fbc6704b90453fada509f1512fafcee83681c1e5e7b4f2c934fcb6bf77"
