@@ -17,7 +17,7 @@ def process_trips(trips: pd.DataFrame) -> pd.DataFrame:
     trips["duration"] = trips["duration"].apply(lambda td: td.total_seconds() / 60)
     print(f"Standard deviation of duration: {np.std(trips['duration']):.2f}")
 
-    outliers_mask = (trips["duration"] >= 1) & (trips["duration"] <= 60) 
+    outliers_mask = (trips["duration"] >= 1) & (trips["duration"] <= 60)
     print(
         f"Fraction of the records left after dropping the outliers: "
         f"{sum(outliers_mask) / len(trips)}"
