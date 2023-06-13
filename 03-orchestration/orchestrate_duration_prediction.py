@@ -46,16 +46,16 @@ def save_best_model_task(path: str, model_name: str, pipe: Pipeline) -> None:
 def markdown_task(rmse: float) -> None:
     markdown_report = f"""# RMSE Report
 
-        ## Summary
+## Summary
 
-        Duration Prediction 
+Duration Prediction 
 
-        ## RMSE XGBoost Model
+## RMSE XGBoost Model
 
-        | Region    | RMSE |
-        |:----------|-------:|
-        | {date.today()} | {rmse:.2f} |
-    """
+| Region         | RMSE       |
+|:---------------|-----------:|
+| {date.today()} | {rmse:.2f} |
+"""
 
     create_markdown_artifact(key="duration-model-report", markdown=markdown_report)
 
