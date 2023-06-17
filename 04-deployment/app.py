@@ -6,6 +6,7 @@ import wget
 from flask import Flask, jsonify, request
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_extraction import DictVectorizer
+from waitress import serve
 
 DATA_FOLDER = "data"
 FEATURE_COLS = ["PULocationID", "DOLocationID"]
@@ -98,4 +99,4 @@ def predict_endpoint():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=9696)
+    serve(app, host="0.0.0.0", port=9696)
