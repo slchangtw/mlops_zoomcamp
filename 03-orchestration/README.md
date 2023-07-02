@@ -151,16 +151,16 @@ Artifacts enable us to track and monitor the outputs that a Flow produces and up
 def markdown_task(rmse: float) -> None:
     markdown_report = f"""# RMSE Report
 
-        ## Summary
+## Summary
 
-        Duration Prediction 
+Duration Prediction 
 
-        ## RMSE  Model
+## RMSE of Model
 
-        | Region    | RMSE |
-        |:----------|-------:|
-        | {date.today()} | {rmse:.2f} |
-    """
+| Region         | RMSE       |
+|:---------------|-----------:|
+| {date.today()} | {rmse:.2f} |
+"""
 
     create_markdown_artifact(key="duration-model-report", markdown=markdown_report)
 ```
