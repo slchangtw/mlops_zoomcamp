@@ -1,10 +1,14 @@
 deployments:
 - name: duration_prediction
   entrypoint: 03-orchestration/orchestrate_duration_prediction.py:main_flow
+  schedule:
+    cron: 0 9 3 * * # 9:00 AM every 3rd day of the month
   work_pool:
     name: trips_prediction_pool
 - name: duration_prediction_hw
   entrypoint: 03-orchestration/homework.py:main_flow_hw
+  schedule:
+    cron: 0 9 3 * *
   work_pool:
     name: trips_prediction_pool
   
