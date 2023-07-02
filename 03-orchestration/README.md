@@ -244,4 +244,20 @@ In addition to scheduled flow runs, we can trigger the flow run by clicking *Qui
 
 # Prefect Cloud
 
- 
+Prefect Cloud provides a hosted environment for running flows. To use [Prefect Cloud](https://app.prefect.cloud/auth/login), we need to create an account. After logging in the account, we have to create a workspace. To enable commands to access the workspace, we need to create an API key from the settings in Prefect Cloud. Then log in your account by the API key using the command below.
+
+```bash
+prefect cloud login -k <API Key>
+```
+
+We can also check the *Server type* by the command below. If the server type is *Cloud*, we are logged in the Prefect Cloud. We can then repeat the operations showed in the previous sections, such as creating blocks, work pools and deployments. By doing so, the flows will be run in the Prefect Cloud.
+
+```bash
+prefect version
+```
+
+If we would like to log out the account, we can use the command below.
+
+```bash
+prefect cloud logout
+```
