@@ -1096,7 +1096,8 @@ woff = ["brotli (>=1.0.1)", "brotlicffi (>=0.8.0)", "zopfli (>=0.1.4)"]
 [[package]]
 name = "fqdn"
 version = "1.5.1"
-description = "Validates fully-qualified domain names against RFC 1123, so that they are acceptable to modern bowsers"
+description = "Validates fully-qualified do
+names against RFC 1123, so that they are acceptable to modern bowsers"
 optional = false
 python-versions = ">=2.7, !=3.0, !=3.1, !=3.2, !=3.3, !=3.4, <4"
 files = [
@@ -5082,3 +5083,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 lock-version = "2.0"
 python-versions = "^3.9"
 content-hash = "fca239ac1a7b91b1d27c87b828693febd7d73c3ff96b2082f02acfc7e73c22aa"
+
