@@ -33,6 +33,7 @@ psycopg = {extras = ["binary"], version = "^3.1.9"}
 [tool.poetry.group.dev.dependencies]
 black = {extras = ["jupyter"], version = "^23.3.0"}
 jupyter = "^1.0.0"
+pytest = "^7.4.0"
 
 [build-system]
 requires = ["poetry-core"]
