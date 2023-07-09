@@ -1,0 +1,21 @@
+services:
+  tests:
+    container_name: nyc_prediction_tests
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=eu-central-1
+    depends_on:
+      - localstack
+  localstack:
+    image: localstack/localstack
+    restart: always
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+    volumes:
+      - ./aws:/etc/localstack/init/ready.d
